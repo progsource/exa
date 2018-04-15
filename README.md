@@ -8,6 +8,19 @@
 It is using the [{fmt} library](https://github.com/fmtlib/fmt) for formatting
 output messages.
 
+## supported OS
+
+It actually should work on any OS, that supports the C++14 standard library.
+
+It is tested to work on:
+
+* Linux (without exceptions and without RTTI)
+
+## dependencies
+
+* C++14
+* [{fmt} library](https://github.com/fmtlib/fmt)
+
 ## assert levels
 
 Currently there is `DEBUG`, `WARNING`, `DEFAULT`, `ERROR` and `FATAL`.
