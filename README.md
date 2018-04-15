@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-brightgreen.svg)](https://semver.org/)
+[![Build Status](https://travis-ci.org/progsource/exa.svg?branch=master)](https://travis-ci.org/progsource/exa)
 
 **exa** is a short name for **extended assert**.
 
