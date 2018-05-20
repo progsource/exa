@@ -21,10 +21,14 @@ message(STATUS "${BoldGreen}----------------------------------------")
 # ------------------------------------------------------------------------------
 
 # this should only be set to true, if you want to run the tests
-set(EXA_UNIT_TESTS true)
+if (NOT DEFINED EXA_UNIT_TESTS)
+  set(EXA_UNIT_TESTS true)
+endif()
 
 # set the following to true, if you want the tests to output the errors to cerr
-set(EXA_DEBUG_TESTS false)
+if (NOT DEFINED EXA_DEBUG_TESTS)
+  set(EXA_DEBUG_TESTS false)
+endif()
 
 # ------------------------------------------------------------------------------
 
