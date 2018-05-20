@@ -20,7 +20,7 @@ message(STATUS "${BoldGreen}----------------------------------------")
 
 # ------------------------------------------------------------------------------
 
-# this should only be set to ture, if you want to run the tests
+# this should only be set to true, if you want to run the tests
 set(EXA_UNIT_TESTS true)
 
 # set the following to true, if you want the tests to output the errors to cerr
@@ -85,32 +85,44 @@ endif()
 
 message(STATUS "${BoldGreen}------- configuring libraries")
 
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/gtest/googlemock)
+if (EXA_UNIT_TESTS)
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/gtest/googlemock)
+endif()
+
 add_subdirectory(libs)
 
 message(STATUS "${BoldGreen}------- configuring libraries done")
 
 # ------------------------------------------------------------------------------
 
-include_directories(
-  ${LIBS_INCLUDE_DIRS}
-  ${EXA_INCLUDE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests
-)
+if (EXA_UNIT_TESTS)
+  include_directories(
+    ${LIBS_INCLUDE_DIRS}
+    ${EXA_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests
+  )
+else ()
+  include_directories(
+    ${LIBS_INCLUDE_DIRS}
+    ${EXA_INCLUDE_DIR}
+  )
+endif ()
 
 # ------------------------------------------------------------------------------
 
-add_library(exalibrary STATIC ${EXA_SRC_FILES} ${LIBS_SRC_FILES})
-target_link_libraries(exalibrary
+add_library(exa STATIC ${EXA_SRC_FILES} ${LIBS_SRC_FILES})
+target_link_libraries(exa
   ${EXA_LIBS}
 )
 
 # ------------------------------------------------------------------------------
 
-add_executable(
-  ExaTests
-    ${EXA_TESTS_FILES}
-)
-target_link_libraries(ExaTests gmock_main exalibrary)
-add_test(ExaTests ${CMAKE_CURRENT_SOURCE_DIR}/build/ExaTests)
+if (EXA_UNIT_TESTS)
+  add_executable(
+    ExaTests
+      ${EXA_TESTS_FILES}
+  )
+  target_link_libraries(ExaTests gmock_main exa)
+  add_test(ExaTests ${CMAKE_CURRENT_SOURCE_DIR}/build/ExaTests)
+endif()
