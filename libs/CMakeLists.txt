@@ -30,7 +30,7 @@ set(LIBS_INCLUDE_DIRS
 # -- fmt -----------------------------------------------------------------------
   ${CMAKE_CURRENT_SOURCE_DIR}/fmt/include
 # ------------------------------------------------------------------------------
-PARENT_SCOPE)
+)
 
 if (EXA_UNIT_TESTS)
   set(LIBS_INCLUDE_DIRS
@@ -39,11 +39,12 @@ if (EXA_UNIT_TESTS)
     ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googletest/include
     ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googlemock/include
   # ----------------------------------------------------------------------------
-  PARENT_SCOPE)
+  )
 
   message(STATUS "added ${White}gtest")
 endif()
 
+set(LIBS_INCLUDE_DIRS ${LIBS_INCLUDE_DIRS} PARENT_SCOPE)
 # ------------------------------------------------------------------------------
 
 set(LIBS_SRC_FILES
