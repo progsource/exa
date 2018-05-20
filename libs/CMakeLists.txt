@@ -27,15 +27,22 @@ message(STATUS "added ${White}exa_fmt")
 # ------------------------------------------------------------------------------
 
 set(LIBS_INCLUDE_DIRS
-# -- googletest / -mock --------------------------------------------------------
-  ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googletest/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googlemock/include
 # -- fmt -----------------------------------------------------------------------
   ${CMAKE_CURRENT_SOURCE_DIR}/fmt/include
 # ------------------------------------------------------------------------------
 PARENT_SCOPE)
 
-message(STATUS "added ${White}gtest")
+if (EXA_UNIT_TESTS)
+  set(LIBS_INCLUDE_DIRS
+    ${LIBS_INCLUDE_DIRS}
+  # -- googletest / -mock ------------------------------------------------------
+    ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googletest/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/gtest/googlemock/include
+  # ----------------------------------------------------------------------------
+  PARENT_SCOPE)
+
+  message(STATUS "added ${White}gtest")
+endif()
 
 # ------------------------------------------------------------------------------
 

@@ -1,4 +1,6 @@
-if(NOT WIN32)
+if (NOT WIN32 AND NOT COLORIZE_DEFINED)
+  set(COLORIZE_DEFINED 1)
+
   string(ASCII 27 Esc)
   set(ColorReset "${Esc}[m")
   set(ColorBold  "${Esc}[1m")
