@@ -20,9 +20,24 @@ message(STATUS "${BoldGreen}----------------------------------------")
 
 # ------------------------------------------------------------------------------
 
+if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+  message(STATUS "exa is top-level project")
+  set(IS_TOP_LEVEL_PROJECT true)
+else()
+  message(STATUS "exa was called from other project with add_subdirectory()")
+  set(IS_TOP_LEVEL_PROJECT false)
+endif()
+
+# ------------------------------------------------------------------------------
+
 # this should only be set to true, if you want to run the tests
 if (NOT DEFINED EXA_UNIT_TESTS)
-  set(EXA_UNIT_TESTS true)
+  if (${IS_TOP_LEVEL_PROJECT})
+    set(EXA_UNIT_TESTS true)
+  else()
+    message(STATUS "exa tests are disabled")
+    set(EXA_UNIT_TESTS false)
+  endif()
 endif()
 
 # set the following to true, if you want the tests to output the errors to cerr
@@ -87,7 +102,7 @@ endif()
 
 # ------------------------------------------------------------------------------
 
-message(STATUS "${BoldGreen}------- configuring libraries")
+message(STATUS "${BoldGreen}------- configuring libraries for exa")
 
 if (EXA_UNIT_TESTS)
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -96,26 +111,25 @@ endif()
 
 add_subdirectory(libs)
 
-message(STATUS "${BoldGreen}------- configuring libraries done")
+message(STATUS "${BoldGreen}------- configuring libraries done for exa")
 
 # ------------------------------------------------------------------------------
 
-if (EXA_UNIT_TESTS)
-  include_directories(
-    ${LIBS_INCLUDE_DIRS}
-    ${EXA_INCLUDE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests
-  )
-else ()
-  include_directories(
-    ${LIBS_INCLUDE_DIRS}
-    ${EXA_INCLUDE_DIR}
-  )
-endif ()
+set(EXA_INCLUDE_DIRS
+  ${LIBS_INCLUDE_DIRS}
+  ${EXA_INCLUDE_DIR}
+)
+
+if (NOT ${IS_TOP_LEVEL_PROJECT})
+  set(EXA_INCLUDE_DIRS ${EXA_INCLUDE_DIRS} PARENT_SCOPE)
+endif()
 
 # ------------------------------------------------------------------------------
 
 add_library(exa STATIC ${EXA_SRC_FILES} ${LIBS_SRC_FILES})
+target_include_directories(exa PRIVATE
+  ${EXA_INCLUDE_DIRS}
+)
 target_link_libraries(exa
   ${EXA_LIBS}
 )
@@ -126,6 +140,10 @@ if (EXA_UNIT_TESTS)
   add_executable(
     ExaTests
       ${EXA_TESTS_FILES}
+  )
+  target_include_directories(ExaTests PRIVATE
+    ${EXA_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests
   )
   target_link_libraries(ExaTests gmock_main exa)
   add_test(ExaTests ${CMAKE_CURRENT_SOURCE_DIR}/build/ExaTests)

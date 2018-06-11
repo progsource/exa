@@ -1,7 +1,7 @@
 # exa
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-brightgreen.svg)](https://semver.org/)
+[![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-brightgreen.svg)](https://semver.org/)
 [![Build Status](https://travis-ci.org/progsource/exa.svg?branch=master)](https://travis-ci.org/progsource/exa)
 
 **exa** is a short name for **extended assert**.
@@ -39,10 +39,20 @@ message, which is written to `std::cerr`, differs based on the level.
 Clone the repository and run `git submodule update --init --recursive` to get
 the dependencies.
 
-Add `libs/fmt`, `include/exa/exa.h` and `src/exa/exa.cpp` to your files to
+### with cmake
+
+Add it as a submodule itself, initialize it recursively and add it to your
+`CMakeLists.txt` with `add_subdirectory(exa)` + adding the fmtlib and exa header
+to your include directories with the variable `${EXA_INCLUDE_DIRS}`.
+
+### without cmake
+
+Add `libs/fmt` files, `include/exa/exa.h` and `src/exa/exa.cpp` to your files to
 compile.
 
-Then you can use it for example like:
+### in code
+
+You can use it for example like:
 
 ```c++
 #include "exa/exa.h"
