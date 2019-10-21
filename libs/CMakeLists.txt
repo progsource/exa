@@ -8,9 +8,9 @@ cmake_minimum_required(VERSION 2.8)
 set(EXA_CPP_VERSION 14)
 add_definitions(-DCPP_VERSION=${EXA_CPP_VERSION})
 
-set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../build/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build/exe)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build/lib)
 
 # ------------------------------------------------------------------------------
 

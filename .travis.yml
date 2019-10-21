@@ -13,6 +13,9 @@ addons:
 script:
   - mkdir tmp
   - cd tmp
-  - cmake ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
+  - make
+  - ../build/ExaTests
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug
   - make
   - ../build/ExaTests

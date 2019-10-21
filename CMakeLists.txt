@@ -3,9 +3,17 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(exa)
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif()
+
+project(exa VERSION 0.1.2)
 
 enable_testing()
+
+set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/exe)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
 
 # ------------------------------------------------------------------------------
 
@@ -20,24 +28,8 @@ message(STATUS "${BoldGreen}----------------------------------------")
 
 # ------------------------------------------------------------------------------
 
-if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  message(STATUS "exa is top-level project")
-  set(IS_TOP_LEVEL_PROJECT true)
-else()
-  message(STATUS "exa was called from other project with add_subdirectory()")
-  set(IS_TOP_LEVEL_PROJECT false)
-endif()
-
-# ------------------------------------------------------------------------------
-
-# this should only be set to true, if you want to run the tests
 if (NOT DEFINED EXA_UNIT_TESTS)
-  if (${IS_TOP_LEVEL_PROJECT})
-    set(EXA_UNIT_TESTS true)
-  else()
-    message(STATUS "exa tests are disabled")
-    set(EXA_UNIT_TESTS false)
-  endif()
+  set(EXA_UNIT_TESTS true)
 endif()
 
 # set the following to true, if you want the tests to output the errors to cerr
@@ -64,12 +56,6 @@ add_definitions(-DCPP_VERSION=${EXA_CPP_VERSION})
 
 # ------------------------------------------------------------------------------
 
-set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-
-# ------------------------------------------------------------------------------
-
 set(EXA_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 file(GLOB_RECURSE EXA_SRC_FILES ${PROJECT_SOURCE_DIR}/src/exa/*.cpp)
 file(GLOB_RECURSE EXA_TESTS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp)
@@ -78,8 +64,10 @@ file(GLOB_RECURSE EXA_TESTS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp)
 
 set(
   CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS} -g -std=c++${EXA_CPP_VERSION} -Wall -Wpedantic -Wextra -Wno-ignored-qualifiers -fno-rtti -fno-exceptions -fsanitize=address -fno-omit-frame-pointer"
+  "${CMAKE_CXX_FLAGS} -std=c++${EXA_CPP_VERSION} -Wall -Wpedantic -Wextra -Wno-ignored-qualifiers -fno-rtti -fno-exceptions"
 )
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 # ------------------------------------------------------------------------------
 
@@ -104,10 +92,8 @@ endif()
 
 message(STATUS "${BoldGreen}------- configuring libraries for exa")
 
-if (EXA_UNIT_TESTS)
-  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/gtest/googlemock)
-endif()
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/gtest/googlemock)
 
 add_subdirectory(libs)
 
@@ -115,36 +101,24 @@ message(STATUS "${BoldGreen}------- configuring libraries done for exa")
 
 # ------------------------------------------------------------------------------
 
-set(EXA_INCLUDE_DIRS
+add_library(exa STATIC ${EXA_SRC_FILES} ${LIBS_SRC_FILES})
+
+target_include_directories(exa PUBLIC
   ${LIBS_INCLUDE_DIRS}
   ${EXA_INCLUDE_DIR}
 )
 
-if (NOT ${IS_TOP_LEVEL_PROJECT})
-  set(EXA_INCLUDE_DIRS ${EXA_INCLUDE_DIRS} PARENT_SCOPE)
-endif()
-
-# ------------------------------------------------------------------------------
-
-add_library(exa STATIC ${EXA_SRC_FILES} ${LIBS_SRC_FILES})
-target_include_directories(exa PRIVATE
-  ${EXA_INCLUDE_DIRS}
-)
 target_link_libraries(exa
   ${EXA_LIBS}
 )
 
 # ------------------------------------------------------------------------------
 
-if (EXA_UNIT_TESTS)
-  add_executable(
-    ExaTests
-      ${EXA_TESTS_FILES}
-  )
-  target_include_directories(ExaTests PRIVATE
-    ${EXA_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests
-  )
-  target_link_libraries(ExaTests gmock_main exa)
-  add_test(ExaTests ${CMAKE_CURRENT_SOURCE_DIR}/build/ExaTests)
-endif()
+add_executable(ExaTests
+  ${EXA_TESTS_FILES}
+)
+target_include_directories(ExaTests PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests
+)
+target_link_libraries(ExaTests gmock_main exa)
+add_test(ExaTests ${CMAKE_CURRENT_SOURCE_DIR}/build/exe/ExaTests)

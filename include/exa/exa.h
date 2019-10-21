@@ -78,8 +78,12 @@ writeMessage(
   #define EXA_FUNCNAME __FUNCTION__
 #endif
 
-#ifdef NDEBUG
-  #define EXA_ABORT abort();
+#ifndef NDEBUG
+  #if !defined(UNIT_TESTS)
+    #define EXA_ABORT abort();
+  #else
+    #define EXA_ABORT
+  #endif
 
   #if defined(_WIN32)
     #define EXA_BREAK_HERE __debugbreak();

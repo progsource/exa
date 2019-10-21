@@ -27,7 +27,7 @@ writeMessageImpl(
   const std::string& functionName,
   const std::string& message
 ) {
-#if !defined(NDEBUG) && !defined(UNIT_TESTS)
+#if defined(NDEBUG)
   if (level == AssertLevel::DEBUG)
   {
     return;

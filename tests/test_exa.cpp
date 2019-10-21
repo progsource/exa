@@ -28,6 +28,17 @@ protected:
 
 // -----------------------------------------------------------------------------
 
+TEST(TEST_EXA, DisplayTestType)
+{
+#ifndef NDEBUG
+  std::cout << "Build Type: DEBUG" << std::endl;
+#else
+  std::cout << "Build Type: RELEASE" << std::endl;
+#endif
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(TEST_EXA_FIXTURE, ItShouldGiveTheCorrectOutputForDebugAsserts)
 {
   const std::string condition = "1 == 0";
@@ -39,10 +50,14 @@ TEST_F(TEST_EXA_FIXTURE, ItShouldGiveTheCorrectOutputForDebugAsserts)
 
   EXA_DEBUG(1 == 0, "This {} some test", "is");
   const std::string actualOutput = cerrRedirector.GetOutput();
-
+  cerrRedirector.ClearOutput();
   cerrRedirector.StopRedirecting();
 
+#ifndef NDEBUG
   checkOutput(actualOutput, condition, level, message);
+#else
+  ASSERT_TRUE(actualOutput.empty());
+#endif
 }
 
 TEST_F(TEST_EXA_FIXTURE, ItShouldGiveTheCorrectOutputForWarningAsserts)

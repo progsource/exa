@@ -1,7 +1,7 @@
 # exa
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-brightgreen.svg)](https://semver.org/)
+[![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-brightgreen.svg)](https://semver.org/)
 [![Build Status](https://travis-ci.org/progsource/exa.svg?branch=master)](https://travis-ci.org/progsource/exa)
 
 **exa** is a short name for **extended assert**.
@@ -26,7 +26,7 @@ It is tested to work on:
 
 Currently there is `DEBUG`, `WARNING`, `DEFAULT`, `ERROR` and `FATAL`.
 
-`DEBUG` will only output something, if exa was compiled with `NDEBUG` defined.
+`DEBUG` will only output something, if exa was compiled without `NDEBUG` defined.
 
 `DEBUG` and `WARNING` should run into a breakpoint, while `DEFAULT`, `ERROR` and
 `FATAL` are going to abort the program.
@@ -77,9 +77,14 @@ cd exa
 git submodule update --init --recursive
 mkdir tmp
 cd tmp
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 make test # or run the tests directly with: ../build/ExaTests
+
+# and with debug version:
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+make
+make test
 ```
 
 If you want to see the output of the asserts during the test runs, you need to
