@@ -15,7 +15,7 @@ script:
   - cd tmp
   - cmake .. -DCMAKE_BUILD_TYPE=Release
   - make
-  - ../build/ExaTests
+  - ../build/exe/ExaTests
   - cmake .. -DCMAKE_BUILD_TYPE=Debug
   - make
-  - ../build/ExaTests
+  - ../build/exe/ExaTests
