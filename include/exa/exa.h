@@ -96,8 +96,6 @@ writeMessage(
     #elif defined(__APPLE__)
       #include <signal.h>
       #define EXA_BREAK_HERE raise(SIGTRAP);
-    #elif defined(__GNUC__)
-      #define EXA_BREAK_HERE __builtin_trap();
     #else
       #define EXA_BREAK_HERE ((void)0);
     #endif
